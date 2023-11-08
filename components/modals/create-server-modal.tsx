@@ -59,7 +59,10 @@ export const CreateServerModal = () => {
       form.reset();
 
       router.refresh();
-    } catch (err) {}
+      onClose();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleClose = () => {
