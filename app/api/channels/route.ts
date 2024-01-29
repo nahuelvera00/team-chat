@@ -1,9 +1,12 @@
+import { NextResponse } from "next/server";
+import { MemberRole } from "@prisma/client";
+
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { MemberRole } from "@prisma/client";
-import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request
+) {
   try {
     const profile = await currentProfile();
     const { name, type } = await req.json();
@@ -30,10 +33,10 @@ export async function POST(req: Request) {
           some: {
             profileId: profile.id,
             role: {
-              in: [MemberRole.ADMIN, MemberRole.MODERATOR],
-            },
-          },
-        },
+              in: [MemberRole.ADMIN, MemberRole.MODERATOR]
+            }
+          }
+        }
       },
       data: {
         channels: {
@@ -41,9 +44,9 @@ export async function POST(req: Request) {
             profileId: profile.id,
             name,
             type,
-          },
-        },
-      },
+          }
+        }
+      }
     });
 
     return NextResponse.json(server);

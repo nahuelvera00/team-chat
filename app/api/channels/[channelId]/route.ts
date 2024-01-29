@@ -1,7 +1,8 @@
+import { NextResponse } from "next/server";
+import { MemberRole } from "@prisma/client";
+
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { MemberRole } from "@prisma/client";
-import { NextResponse } from "next/server";
 
 export async function DELETE(
   req: Request,
@@ -10,6 +11,7 @@ export async function DELETE(
   try {
     const profile = await currentProfile();
     const { searchParams } = new URL(req.url);
+
     const serverId = searchParams.get("serverId");
 
     if (!profile) {
@@ -30,9 +32,11 @@ export async function DELETE(
         members: {
           some: {
             profileId: profile.id,
-            role: { in: [MemberRole.ADMIN, MemberRole.MODERATOR] },
-          },
-        },
+            role: {
+              in: [MemberRole.ADMIN, MemberRole.MODERATOR],
+            }
+          }
+        }
       },
       data: {
         channels: {
@@ -40,10 +44,10 @@ export async function DELETE(
             id: params.channelId,
             name: {
               not: "general",
-            },
-          },
-        },
-      },
+            }
+          }
+        }
+      }
     });
 
     return NextResponse.json(server);
@@ -61,6 +65,7 @@ export async function PATCH(
     const profile = await currentProfile();
     const { name, type } = await req.json();
     const { searchParams } = new URL(req.url);
+
     const serverId = searchParams.get("serverId");
 
     if (!profile) {
@@ -85,9 +90,11 @@ export async function PATCH(
         members: {
           some: {
             profileId: profile.id,
-            role: { in: [MemberRole.ADMIN, MemberRole.MODERATOR] },
-          },
-        },
+            role: {
+              in: [MemberRole.ADMIN, MemberRole.MODERATOR],
+            }
+          }
+        }
       },
       data: {
         channels: {
@@ -101,10 +108,10 @@ export async function PATCH(
             data: {
               name,
               type,
-            },
-          },
-        },
-      },
+            }
+          }
+        }
+      }
     });
 
     return NextResponse.json(server);
